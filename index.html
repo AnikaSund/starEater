@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-      <html>
-      <canvas id = 'canvas' width = '500' height = '500'>
-    </canvas>
-    <script>
-        var canvas;
+<html>
+  <canvas id = 'canvas' width = '1500' height = '750'>
+  </canvas>
+  
+  <script>
+    var canvas;
     var ctx; 
     canvas = document.getElementById("canvas");
     ctx = canvas.getContext('2d');
     window.addEventListener("keydown", keyDownTextField, false);
     window.requestAnimationFrame(update);
+    
 
     var Direction = {
       NONE: 1,
@@ -146,6 +148,9 @@
     }
 
   </script>
+  <style>
+    .myImage {
+      background-image: url("space.jpg");
+    } 
+  </style>
 </html>
-
-  
