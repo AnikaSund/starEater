@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+      <html>
+      <canvas id = 'canvas' width = '500' height = '500'>
+    </canvas>
+    <script>
+        var canvas;
+    var ctx; 
+    canvas = document.getElementById("canvas");
+    ctx = canvas.getContext('2d');
+    window.addEventListener("keydown", keyDownTextField, false);
+    window.requestAnimationFrame(update);
+
+    var Direction = {
+      NONE: 1,
+      LEFT: 2,
+      RIGHT: 3,
+      UP: 4,
+      DOWN: 5
+    };
+
+    //CHARACTER
+
+    var charDirection = Direction.NONE;
+    var charVeloc = 2;
+    var charX = 200;
+    var charY = 100;
+
+    function drawCharacter(x, y){
+      ctx.fillStyle = "black";
+      ctx.fillRect(x-5, y-5, 10, 10);
+    }
+
+    function updateCharacter(){
+
+      //touching enemy?
+      if (Math.abs(charX - enemyX) < enemySize && Math.abs(charY - enemyY) < enemySize) {
+        score--;
+        changeEnemySize(-5);
+      }
+
+      //touching gold?
+      if (Math.abs(charX - coinX) < 10 && Math.abs(charY - coinY) < 10) {
+        goldX = Math.random()*canvas.width;
+        goldY = Math.random()*canvas.height;
+        score++;
+        moveCoin();
+        changeEnemySize(5);
+      }
+
+      if (charDirection == Direction.NONE ){
+        drawCharacter(charX, charY);
+      } else if ( charDirection == Direction.LEFT ){
+        drawCharacter(charX-=charVeloc, charY);
+      } else if ( charDirection == Direction.RIGHT ){
+        drawCharacter(charX+=charVeloc, charY);
+      } else if ( charDirection == Direction.UP ){
+        drawCharacter(charX, charY-=charVeloc);
+      } else if ( charDirection == Direction.DOWN ){
+        drawCharacter(charX, charY+=charVeloc);
+      }
+    }
+
+    //ENEMY
+
+    var enemyXV = 1;
+    var enemyYV = 2;
+    var enemyX = 100;
+    var enemyY = 100;
+    var enemySize = 20;
+
+    function drawEnemy(x, y){
+      ctx.fillStyle = "red";
+      ctx.fillRect(x-enemySize/2, y-enemySize/2, enemySize, enemySize);
+    }
+
+    function updateEnemy(){
+      drawEnemy(enemyX += enemyXV, enemyY += enemyYV);
+
+      //change enemie's direction if on edge of screen
+      if (enemyX >= canvas.width || enemyX <= 0) {
+        enemyXV = -enemyXV;
+      }
+      if (enemyY >= canvas.height || enemyY <= 0) {
+        enemyYV = -enemyYV;
+      }
+    }
+
+    function changeEnemySize(size){
+      //check limits of size before changing the size
+      if ((size>0 && enemySize <= 100-size && enemySize >= 10+size) ||
+          (size<0 && enemySize <= 100+size && enemySize >= 10-size )) {
+
+        enemySize+=size;
+      }
+    }
+
+    //COIN
+
+    var coinX = 50;
+    var coinY = 100;
+
+    function drawCoin(x, y){
+      ctx.fillStyle = "gold";
+      ctx.fillRect(x-5, y-5, 10, 10);
+    }
+
+    function moveCoin(){
+      coinX = Math.random()*(canvas.width-20)+10;
+      coinY = Math.random()*(canvas.height-20)+10;
+    }
+
+    //MAIN PROGRAM
+
+    var score = 0;
+
+    function clear(){
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    function update(){
+      clear();
+
+      //update game elements
+      updateCharacter();
+      updateEnemy();
+      drawCoin(coinX, coinY);
+
+      //show score
+      ctx.fillStyle = "black";
+      ctx.fillText("score: " + score, 50, 50);
+
+      window.requestAnimationFrame(update);
+    }
+
+    //up is 38, down is 40, right is 39, left is 37
+    function keyDownTextField (e) {
+      if( e.keyCode == 38 ){
+        charDirection = Direction.UP;
+      } else if( e.keyCode == 40 ){
+        charDirection = Direction.DOWN;
+      } else if( e.keyCode == 39 ){
+        charDirection = Direction.RIGHT;
+      } else if( e.keyCode == 37 ){
+        charDirection = Direction.LEFT;
+      }
+    }
+
+  </script>
+</html>
+
+  
